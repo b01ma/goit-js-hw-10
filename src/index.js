@@ -14,16 +14,36 @@ refs.button.addEventListener('click', onClickEvent);
 
 function onClickEvent(event) {
     // console.log(countryInput);
-    fetchCountry(countryInput).then(data => {
+    fetchCountry(countryInput)
+        .then(data => {
         console.dir(data)
 
-        console.log(data.length);
+         if (data == undefined) {
+            return
+        }
+        // console.log(data.length);
+
+        if (data.length > 10) {
+            alert("Too many matches found. Please enter a more specific name.")
+            return
+        };
 
         if (data.length > 1) {
 
-            console.log('more then 1')
+            // console.log('more then 1')
 
-            const countryList = data.map(country => country.name.official);
+            const countryList = data.map(country => {
+                // console.log(country.name.official);
+                const countryList = {
+                    flag: country.flags.svg,
+                    name: country.name.official,
+                }
+
+                console.log(countryList);
+
+                // return country.name.official;
+            });
+
             console.log(countryList);
 
             return
@@ -42,7 +62,7 @@ function onClickEvent(event) {
 
         console.log(countryData);
 
-    });; 
+        })
 }
 
 function onInput(event) {
@@ -52,5 +72,16 @@ function onInput(event) {
 
 function fetchCountry(country) {
      return fetch(`https://restcountries.com/v3.1/name/${country}?fields=name,capital,population,flags,languages;`)
-    .then(r => r.json());
+        .then(r => {
+             if (r.status == 404) {
+                 alert("Oops, there is no country with that name")
+                return
+             }
+        
+             return r.json()
+        }).catch(error => {
+            alert('error');
+         })
+    
+         
 };

@@ -18,3 +18,23 @@ body {
   max-width: 320px;
   margin-bottom: 16px;
 }
+.heading {
+  text-align: center;
+  color: darkblue;
+}
+
+.container {
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body {
+  background-color: lightgray;
+}
