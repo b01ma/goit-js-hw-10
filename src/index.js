@@ -7,18 +7,23 @@ const refs = {
 
 const DEBOUNCE_DELAY = 300;
 
+let countryInput = "";
 
+refs.input.addEventListener('input', onInput);
+refs.button.addEventListener('click', onClickEvent);
 
+function onClickEvent(event) {
+    // console.log(countryInput);
+    fetchCountry(countryInput);
+}
 
-//  function fetchCountry(countryName) {fetch(`https://restcountries.com/v3.1/name/${countryName}?fields=name,capital,population,flags,languages;`)
-//     .then(r => r.json()).then(data => {
-//         console.dir(data[0])
-//     });
-// };
-name(1);
+function onInput(event) {
+    // console.dir(event.currentTarget.value);
+    countryInput = event.currentTarget.value
+}
 
-function name(x) {
-    console.log(`name is ${x}`)
+function fetchCountry(countryInput) {fetch(`https://restcountries.com/v3.1/name/${countryInput}?fields=name,capital,population,flags,languages;`)
+    .then(r => r.json()).then(data => {
+        console.dir(data[0])
+    });
 };
-
-
