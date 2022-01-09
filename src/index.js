@@ -1,4 +1,7 @@
 import './css/styles.css';
+import fetchCountry from './js/fetch';
+import _ from "lodash";
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const refs = {
     button: document.querySelector('.button-test'),
@@ -8,42 +11,45 @@ const refs = {
 }
 
 const DEBOUNCE_DELAY = 300;
+const debounceInput = _.debounce(onInput, DEBOUNCE_DELAY);
 
 let countryInput = "";
 
-refs.input.addEventListener('input', onInput);
-refs.button.addEventListener('click', onClickEvent);
+refs.input.addEventListener('input', debounceInput);
 
-function onClickEvent(event) {
-
+function onInput(event) {
     refs.countryList.innerHTML = "";
     refs.countryInfo.innerHTML = "";
-    // console.log(countryInput);
+    
+    
+
+    countryInput = event.target.value.trim()
+
+    if (!countryInput) {
+        // console.log("false")
+        return
+    } 
+
     fetchCountry(countryInput)
         .then(data => {
-
-        console.dir(data)
-
+        // console.dir(data)
          if (data == undefined) {
             return
         }
 
-            if (data.length > 10) {
-                
-            alert("Too many matches found. Please enter a more specific name.")
+            if (data.length > 10) {  
+            Notify.warning("Too many matches found. Please enter a more specific name.")
             return
         };
 
             if (data.length > 1) {
 
             const countryList = data.map(country => {
-                // console.log(country.name.official);
+                
                 const countryList = {
                     flag: country.flags.svg,
                     name: country.name.official,
                 }
-
-                console.log(countryList);
 
                 const markUpList = `<li>
                                         <img class="country-flag" src="${countryList.flag}" alt="flag"></>${countryList.name}
@@ -52,10 +58,8 @@ function onClickEvent(event) {
                 refs.countryList.insertAdjacentHTML('beforeend', markUpList);
 
             });
-
-            console.log(countryList);
-
-            return
+                return
+                
             } 
             
             refs.countryList.innerHTML = "";
@@ -70,8 +74,6 @@ function onClickEvent(event) {
                 population: data[0].population,
                 languages,
             }
-
-            console.log(countryData.languages);
 
             refs.countryInfo.innerHTML = `
             <h1 class="country-name">
@@ -91,28 +93,8 @@ function onClickEvent(event) {
                 ${countryData.languages}
             </p>`
         })
+    
 }
 
-function onInput(event) {
-    // console.dir(event.currentTarget.value);
-    countryInput = event.currentTarget.value
-}
 
-function fetchCountry(country) {
-     return fetch(`https://restcountries.com/v3.1/name/${country}?fields=name,capital,population,flags,languages;`)
-        .then(r => {
-             if (r.status == 404) {
-                 alert("Oops, there is no country with that name")
-                return
-             }
-             if (r.status != 200) {
-                 alert("Oops, we are all doomed")
-                return
-             }
-        
-             return r.json()
-        }).catch(error => {
-            alert('error');
-         })
-         
-};
+
