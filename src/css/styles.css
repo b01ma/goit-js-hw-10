@@ -23,6 +23,10 @@ body {
   color: darkblue;
 }
 
+li {
+  list-style: none;
+}
+
 .container {
 
   display: flex;
@@ -33,6 +37,16 @@ body {
   margin-top: 50px;
   margin-left: auto;
   margin-right: auto;
+}
+
+.country-flag {
+  width: 20px;
+  margin-right: 10px;
+}
+
+.country-flag--big {
+  width: 50px;
+  margin-right: 20px;
 }
 
 body {

@@ -3,6 +3,8 @@ import './css/styles.css';
 const refs = {
     button: document.querySelector('.button-test'),
     input: document.querySelector('#search-box'),
+    countryList: document.querySelector('.country-list'),
+    countryInfo: document.querySelector('.country-info'),
 }
 
 const DEBOUNCE_DELAY = 300;
@@ -13,24 +15,26 @@ refs.input.addEventListener('input', onInput);
 refs.button.addEventListener('click', onClickEvent);
 
 function onClickEvent(event) {
+
+    refs.countryList.innerHTML = "";
+    refs.countryInfo.innerHTML = "";
     // console.log(countryInput);
     fetchCountry(countryInput)
         .then(data => {
+
         console.dir(data)
 
          if (data == undefined) {
             return
         }
-        // console.log(data.length);
 
-        if (data.length > 10) {
+            if (data.length > 10) {
+                
             alert("Too many matches found. Please enter a more specific name.")
             return
         };
 
-        if (data.length > 1) {
-
-            // console.log('more then 1')
+            if (data.length > 1) {
 
             const countryList = data.map(country => {
                 // console.log(country.name.official);
@@ -41,27 +45,51 @@ function onClickEvent(event) {
 
                 console.log(countryList);
 
-                // return country.name.official;
+                const markUpList = `<li>
+                                        <img class="country-flag" src="${countryList.flag}" alt="flag"></>${countryList.name}
+                                    </li>`
+
+                refs.countryList.insertAdjacentHTML('beforeend', markUpList);
+
             });
 
             console.log(countryList);
 
             return
-        } 
-        
-        console.log('only one');
+            } 
+            
+            refs.countryList.innerHTML = "";
 
-        const countryData = {
+            const languages = Object.values(data[0].languages).join(', ');
 
-            officialName: data[0].name.official,
-            flag: data[0].flags.svg,
-            capital: data[0].capital,
-            population: data[0].population,
-            languages: data[0].languages,
-        }
+            const countryData = {
 
-        console.log(countryData);
+                officialName: data[0].name.official,
+                flag: data[0].flags.svg,
+                capital: data[0].capital,
+                population: data[0].population,
+                languages,
+            }
 
+            console.log(countryData.languages);
+
+            refs.countryInfo.innerHTML = `
+            <h1 class="country-name">
+                 <img class="country-flag--big" src="${countryData.flag}" alt="flag">
+                ${countryData.officialName}
+             </h1>
+            <p>
+                <b>Capital:</b>
+                ${countryData.capital}
+            </p>
+            <p>
+                <b>Population:</b>
+                ${countryData.population} people
+            </p>
+            <p>
+                <b>Languages:</b>
+                ${countryData.languages}
+            </p>`
         })
 }
 
@@ -77,11 +105,14 @@ function fetchCountry(country) {
                  alert("Oops, there is no country with that name")
                 return
              }
+             if (r.status != 200) {
+                 alert("Oops, we are all doomed")
+                return
+             }
         
              return r.json()
         }).catch(error => {
             alert('error');
          })
-    
          
 };
