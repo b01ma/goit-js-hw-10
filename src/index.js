@@ -52,6 +52,7 @@ function onInput(event) {
                 refs.countryList.innerHTML = "";
 
                 const languages = languagesToList(data);
+
                 const countryData = {
 
                     officialName: data[0].name.official,
@@ -85,7 +86,7 @@ function countryListMarkUp(data) {
             };
 
 function languagesToList(array) {
-    Object.values(array[0].languages).join(', ');
+    return Object.values(array[0].languages).join(', ');
 };
 
 function countryInfoMarkUp(countryData) {
